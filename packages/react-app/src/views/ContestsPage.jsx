@@ -123,14 +123,14 @@ export default function ContestsPage({targetNetwork, price, signer, provider, ma
       </div>
       {contestSearchInput != "" ? 
         <ContestContract
-          name="Contest"
           price={price}
           signer={signer}
           provider={provider}
           mainnetProvider={mainnetProvider}
           userAddress={address}
           blockExplorer={blockExplorer}
-          contractConfig={generateCustomContestConfig(false)}
+          contestContractConfig={generateCustomContestConfig(false)}
+          tokenContractConfig={generateCustomTokenConfig()}
           chainId={targetNetwork.chainId}
         />
       : ""}

@@ -2,6 +2,7 @@ import { Card, Button, Divider } from "antd";
 import { useContractExistsAtAddress, useContractLoader } from "eth-hooks";
 import React, { useMemo, useState } from "react";
 import ProposingFunctionForm from "./ProposingFunctionForm";
+import DelegatingFunctionForm from "./DelegatingFunctionForm";
 import AllProposalIdsDisplayVariable from "./AllProposalIdsDisplayVariable";
 import UserVotesAndUsedDisplayVariable from "./UserVotesAndUsedDisplayVariable";
 import ContestInfoDisplayVariable from "./ContestInfoDisplayVariable";
@@ -43,69 +44,65 @@ const noContractDisplay = (
 );
 
 export default function ContestContract({
-  customContract,
   userAddress,
   gasPrice,
   signer,
   provider,
   mainnetProvider,
-  name,
   show,
   blockExplorer,
   chainId,
-  contractConfig,
+  contestContractConfig,
+  tokenContractConfig,
 }) {
-  const contracts = useContractLoader(provider, contractConfig, chainId);
-  let contract;
-  if (!customContract) {
-    contract = contracts ? contracts[name] : "";
-  } else {
-    contract = customContract;
-  }
 
-  const address = contract ? contract.address : "";
-  const contractIsDeployed = useContractExistsAtAddress(provider, address);
+  const [refreshRequired, triggerRefresh] = useState(false);
 
-  const displayedContractFunctions = useMemo(() => {
-    const results = contract
-      ? Object.entries(contract.interface.functions).filter(
+  // Get Contest functions
+  const contestContracts = useContractLoader(provider, contestContractConfig, chainId);
+  let contestContract = contestContracts ? contestContracts["Contest"] : "";
+
+  const contestAddress = contestContract ? contestContract.address : "";
+  const contestContractIsDeployed = useContractExistsAtAddress(provider, contestAddress);
+
+  const displayedContestContractFunctions = useMemo(() => {
+    const results = contestContract
+      ? Object.entries(contestContract.interface.functions).filter(
           fn => fn[1]["type"] === "function" && !(show && show.indexOf(fn[1]["name"]) < 0),
         )
       : [];
     return results;
-  }, [contract, show]);
-
-  const [refreshRequired, triggerRefresh] = useState(false);
+  }, [contestContract, show]);
   
-  const funcsDict = {};
-  displayedContractFunctions.forEach(contractFuncInfo => {
-    funcsDict[contractFuncInfo[1].name] = contractFuncInfo;
+  const contestFuncsDict = {};
+  displayedContestContractFunctions.forEach(contractFuncInfo => {
+    contestFuncsDict[contractFuncInfo[1].name] = contractFuncInfo;
   });
 
-  const getAllProposalIdsFuncInfo = funcsDict["getAllProposalIds"]
-  const getProposalFuncInfo = funcsDict["getProposal"]
-  const proposalVotesFuncInfo = funcsDict["proposalVotes"]
-  const addressesVotedFuncInfo = funcsDict["proposalAddressesHaveVoted"]
-  const proposalAddressVotesFuncInfo = funcsDict["proposalAddressVotes"]
-  const proposeFuncInfo = funcsDict["propose"]
-  const castVoteFuncInfo = funcsDict["castVote"]
-  const getVotesFuncInfo = funcsDict["getVotes"]
-  const contestAddressTotalVotesCastFuncInfo = funcsDict["contestAddressTotalVotesCast"]
-  const contestSnapshotFuncInfo = funcsDict["contestSnapshot"]
-  const proposalThresholdFuncInfo = funcsDict["proposalThreshold"]
-  const stateFuncInfo = funcsDict["state"]
-  const nameFuncInfo = funcsDict["name"]
-  const tokenFuncInfo = funcsDict["token"]
-  const voteStartFuncInfo = funcsDict["voteStart"]
-  const contestDeadlineFuncInfo = funcsDict["contestDeadline"]
+  const getAllProposalIdsFuncInfo = contestFuncsDict["getAllProposalIds"]
+  const getProposalFuncInfo = contestFuncsDict["getProposal"]
+  const proposalVotesFuncInfo = contestFuncsDict["proposalVotes"]
+  const addressesVotedFuncInfo = contestFuncsDict["proposalAddressesHaveVoted"]
+  const proposalAddressVotesFuncInfo = contestFuncsDict["proposalAddressVotes"]
+  const proposeFuncInfo = contestFuncsDict["propose"]
+  const castVoteFuncInfo = contestFuncsDict["castVote"]
+  const getVotesFuncInfo = contestFuncsDict["getVotes"]
+  const contestAddressTotalVotesCastFuncInfo = contestFuncsDict["contestAddressTotalVotesCast"]
+  const contestSnapshotFuncInfo = contestFuncsDict["contestSnapshot"]
+  const proposalThresholdFuncInfo = contestFuncsDict["proposalThreshold"]
+  const stateFuncInfo = contestFuncsDict["state"]
+  const nameFuncInfo = contestFuncsDict["name"]
+  const tokenFuncInfo = contestFuncsDict["token"]
+  const voteStartFuncInfo = contestFuncsDict["voteStart"]
+  const contestDeadlineFuncInfo = contestFuncsDict["contestDeadline"]
   
-  const contractDisplay = contract ?
+  const contractDisplay = contestContract ?
     <div>
       <div style={{ fontSize: 24 }}>
         <ContestInfoDisplayVariable
-          nameContractFunction={contract[nameFuncInfo[0]]}
-          tokenContractFunction={contract[tokenFuncInfo[0]]}
-          address={address}
+          nameContractFunction={contestContract[nameFuncInfo[0]]}
+          tokenContractFunction={contestContract[tokenFuncInfo[0]]}
+          address={contestAddress}
           refreshRequired={refreshRequired}
           triggerRefresh={triggerRefresh}
           blockExplorer={blockExplorer}
@@ -115,36 +112,36 @@ export default function ContestContract({
       <Divider />
       <UserVotesAndUsedDisplayVariable
         userAddress={userAddress}
-        contestStateContractFunction={contract[stateFuncInfo[0]]}
-        getVotesContractFunction={contract[getVotesFuncInfo[0]]}
-        proposalThresholdContractFunction={contract[proposalThresholdFuncInfo[0]]}
-        contestAddressTotalVotesCastContractFunction={contract[contestAddressTotalVotesCastFuncInfo[0]]}
-        constestSnapshotContractFunction={contract[contestSnapshotFuncInfo[0]]}
-        voteStartContractFunction={contract[voteStartFuncInfo[0]]}
-        contestDeadlineContractFunction={contract[contestDeadlineFuncInfo[0]]}
+        contestStateContractFunction={contestContract[stateFuncInfo[0]]}
+        getVotesContractFunction={contestContract[getVotesFuncInfo[0]]}
+        proposalThresholdContractFunction={contestContract[proposalThresholdFuncInfo[0]]}
+        contestAddressTotalVotesCastContractFunction={contestContract[contestAddressTotalVotesCastFuncInfo[0]]}
+        constestSnapshotContractFunction={contestContract[contestSnapshotFuncInfo[0]]}
+        voteStartContractFunction={contestContract[voteStartFuncInfo[0]]}
+        contestDeadlineContractFunction={contestContract[contestDeadlineFuncInfo[0]]}
         refreshRequired={refreshRequired}
         provider={provider}
         triggerRefresh={triggerRefresh}
       />
       <ProposingFunctionForm 
-        contractFunction={contract.connect(signer)[proposeFuncInfo[0]]}
+        contractFunction={contestContract.connect(signer)[proposeFuncInfo[0]]}
         functionInfo={proposeFuncInfo[1]}
         provider={provider}
         gasPrice={gasPrice}
         triggerRefresh={triggerRefresh}
       />
       <AllProposalIdsDisplayVariable
-        getAllProposalIdsContractFunction={contract[getAllProposalIdsFuncInfo[0]]}
+        getAllProposalIdsContractFunction={contestContract[getAllProposalIdsFuncInfo[0]]}
         getAllProposalIdsFunctionInfo={getAllProposalIdsFuncInfo}
-        getProposalContractFunction={contract[getProposalFuncInfo[0]]}
+        getProposalContractFunction={contestContract[getProposalFuncInfo[0]]}
         getProposalFunctionInfo={getProposalFuncInfo}
-        proposalVotesContractFunction={contract[proposalVotesFuncInfo[0]]}
+        proposalVotesContractFunction={contestContract[proposalVotesFuncInfo[0]]}
         proposalVotesFunctionInfo={proposalVotesFuncInfo}
-        addressesVotedContractFunction={contract[addressesVotedFuncInfo[0]]}
+        addressesVotedContractFunction={contestContract[addressesVotedFuncInfo[0]]}
         addressesVotedFunctionInfo={addressesVotedFuncInfo}
-        proposalAddressVotesContractFunction={contract[proposalAddressVotesFuncInfo[0]]}
+        proposalAddressVotesContractFunction={contestContract[proposalAddressVotesFuncInfo[0]]}
         proposalAddressVotesFunctionInfo={proposalAddressVotesFuncInfo}
-        castVoteContractFunction={contract.connect(signer)[castVoteFuncInfo[0]]} // Different bc function, not display form
+        castVoteContractFunction={contestContract.connect(signer)[castVoteFuncInfo[0]]} // Different bc function, not display form
         castVoteFunctionInfo={castVoteFuncInfo[1]}
         refreshRequired={refreshRequired}
         triggerRefresh={triggerRefresh}
@@ -164,7 +161,7 @@ export default function ContestContract({
         style={{ marginTop: 25, width: "100%" }}
         loading={contractDisplay && contractDisplay.length <= 0}
       >
-        {contractIsDeployed ? contractDisplay : noContractDisplay}
+        {contestContractIsDeployed ? contractDisplay : noContractDisplay}
       </Card>
     </div>
   );
