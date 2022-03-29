@@ -17,10 +17,12 @@ export default function FunctionForm({ tokenContractConfig, tokenContractFunctio
   const [txValue, setTxValue] = useState();
   const [returnValue, setReturnValue] = useState();
 
+  const delegateContractFunction = "";
+  const delegateFunctionInfo = "";
   const tx = Transactor(provider, gasPrice);
 
-  const inputs = tokenFunctionInfo.inputs.map((input, inputIndex) => {
-    const key = getFunctionInputKey(tokenFunctionInfo, input, inputIndex);
+  const inputs = delegateFunctionInfo.inputs.map((input, inputIndex) => {
+    const key = getFunctionInputKey(delegateFunctionInfo, input, inputIndex);
 
     let buttons = "";
     if (input.type === "bytes32") {
@@ -156,7 +158,7 @@ export default function FunctionForm({ tokenContractConfig, tokenContractFunctio
     </div>
   );
 
-  if (tokenFunctionInfo.payable) {
+  if (delegateFunctionInfo.payable) {
     inputs.push(txValueInput);
   }
 
@@ -180,8 +182,8 @@ export default function FunctionForm({ tokenContractConfig, tokenContractFunctio
             style={{ width: 50, height: 30, margin: 0 }}
             type="default"
             onClick={async () => {
-              const args = tokenFunctionInfo.inputs.map((input, inputIndex) => {
-                const key = getFunctionInputKey(tokenFunctionInfo, input, inputIndex);
+              const args = delegateFunctionInfo.inputs.map((input, inputIndex) => {
+                const key = getFunctionInputKey(delegateFunctionInfo, input, inputIndex);
                 let value = form[key];
                 if (input.baseType === "array") {
                   value = JSON.parse(value);
@@ -196,9 +198,9 @@ export default function FunctionForm({ tokenContractConfig, tokenContractFunctio
               });
 
               let result;
-              if (tokenFunctionInfo.stateMutability === "view" || tokenFunctionInfo.stateMutability === "pure") {
+              if (delegateFunctionInfo.stateMutability === "view" || delegateFunctionInfo.stateMutability === "pure") {
                 try {
-                  const returned = await tokenContractFunction(...args);
+                  const returned = await delegateContractFunction(...args);
                   handleForm(returned);
                   result = tryToDisplayAsText(returned);
                 } catch (err) {
@@ -216,7 +218,7 @@ export default function FunctionForm({ tokenContractConfig, tokenContractFunctio
                 // overrides.gasLimit = hexlify(1200000);
 
                 // console.log("Running with extras",extras)
-                const returned = await tx(tokenContractFunction(...args, overrides));
+                const returned = await tx(delegateContractFunction(...args, overrides));
                 handleForm(returned);
                 result = tryToDisplay(returned);
               }
