@@ -42,7 +42,7 @@ export default function ContestsPage({targetNetwork, price, signer, provider, ma
     return customContestConfig;
   }
   
-  function generateCustomTokenConfig() {
+  function generateCustomTokenConfig(address) {
     let customTokenConfig = generateCustomConfigBase();
     customTokenConfig["deployedContracts"][targetNetwork.chainId][targetNetwork.name] =
       {
@@ -50,7 +50,7 @@ export default function ContestsPage({targetNetwork, price, signer, provider, ma
         contracts: {
           GenericVotesToken: {
             abi: DeployedGenericVotesTokenContract.abi,
-            address: tokenSearchInput
+            address: address
           }
         },
         name: targetNetwork.name
@@ -130,7 +130,7 @@ export default function ContestsPage({targetNetwork, price, signer, provider, ma
           userAddress={address}
           blockExplorer={blockExplorer}
           contestContractConfig={generateCustomContestConfig(false)}
-          tokenContractConfig={generateCustomTokenConfig()}
+          tokenContractConfigGenerator={generateCustomTokenConfig}
           chainId={targetNetwork.chainId}
         />
       : ""}
@@ -164,7 +164,7 @@ export default function ContestsPage({targetNetwork, price, signer, provider, ma
           provider={provider}
           address={address}
           blockExplorer={blockExplorer}
-          contractConfig={generateCustomTokenConfig()}
+          contractConfig={generateCustomTokenConfig(tokenSearchInput)}
           chainId={targetNetwork.chainId}
         /> 
       : ""}

@@ -12,14 +12,31 @@ const getFunctionInputKey = (functionInfo, input, inputIndex) => {
   return functionInfo.name + "_" + name + "_" + input.type;
 };
 
-export default function FunctionForm({ tokenContractConfig, tokenContractFunction, tokenFunctionInfo, provider, gasPrice, triggerRefresh }) {
+export default function FunctionForm({ tokenContractConfigGenerator, tokenContractFunction, tokenFunctionInfo, provider, gasPrice, refresh, triggerRefresh }) {
   const [form, setForm] = useState({});
   const [txValue, setTxValue] = useState();
   const [returnValue, setReturnValue] = useState();
 
-  const delegateContractFunction = "";
-  const delegateFunctionInfo = "";
+  const [tokenContractConfig, setTokenContractConfig] = useState();
+
   const tx = Transactor(provider, gasPrice);
+
+  const refresh = useCallback(async () => {
+    try {
+      const tokenResponse = await tokenContractFunction();
+      let generatedConfig = tokenContractConfigGenerator(tokenResponse)
+      setTokenContractConfig(generatedConfig);
+      triggerRefresh(false);
+    } catch (e) {
+      console.log(e);
+    }
+  }, [setTokenAddress, tokenContractFunction, triggerRefresh]);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh, refreshRequired, tokenContractFunction]);
+
+  // Put it all in a loading if statement so that it only processes or shows any of this once we get that token address
 
   const inputs = delegateFunctionInfo.inputs.map((input, inputIndex) => {
     const key = getFunctionInputKey(delegateFunctionInfo, input, inputIndex);

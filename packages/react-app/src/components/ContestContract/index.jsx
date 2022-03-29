@@ -53,7 +53,7 @@ export default function ContestContract({
   blockExplorer,
   chainId,
   contestContractConfig,
-  tokenContractConfig,
+  tokenContractConfigGenerator,
 }) {
 
   const [refreshRequired, triggerRefresh] = useState(false);
