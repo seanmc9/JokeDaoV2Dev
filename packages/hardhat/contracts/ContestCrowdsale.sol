@@ -9,7 +9,10 @@ import "./crowdsale/validation/TimedCrowdsale.sol";
 
 contract ContestCrowdsale is Crowdsale, AllowanceCrowdsale, CappedCrowdsale, PausableCrowdsale, TimedCrowdsale {
     
-    constructor(uint256 rate_, address payable wallet_, IERC20 token_, 
+    string public name;
+
+    constructor(string memory name_,
+                uint256 rate_, address payable wallet_, IERC20 token_, 
                 address tokenWallet_,
                 uint256 cap_,
                 uint256 openingTime_, uint256 closingTime_)
@@ -17,7 +20,9 @@ contract ContestCrowdsale is Crowdsale, AllowanceCrowdsale, CappedCrowdsale, Pau
         AllowanceCrowdsale(tokenWallet_)
         CappedCrowdsale(cap_)
         TimedCrowdsale(openingTime_, closingTime_)
-    {}
+    {
+        name = name_;
+    }
 
     function pause() public {
         require(msg.sender == tokenWallet());
