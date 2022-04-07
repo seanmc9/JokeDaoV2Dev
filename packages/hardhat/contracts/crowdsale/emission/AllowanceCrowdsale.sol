@@ -1,16 +1,17 @@
-pragma solidity ^0.5.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.4;
 
 import "../Crowdsale.sol";
 import "../../token/ERC20/IERC20.sol";
-import "../../token/ERC20/SafeERC20.sol";
-import "../../math/SafeMath.sol";
-import "../../math/Math.sol";
+import "../../token/ERC20/utils/SafeERC20.sol";
+import "../../utils/math/SafeMath.sol";
+import "../../utils/math/Math.sol";
 
 /**
  * @title AllowanceCrowdsale
  * @dev Extension of Crowdsale where tokens are held by a wallet, which approves an allowance to the crowdsale.
  */
-contract AllowanceCrowdsale is Crowdsale {
+abstract contract AllowanceCrowdsale is Crowdsale {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -18,11 +19,11 @@ contract AllowanceCrowdsale is Crowdsale {
 
     /**
      * @dev Constructor, takes token wallet address.
-     * @param tokenWallet Address holding the tokens, which has approved allowance to the crowdsale.
+     * @param tokenWallet_ Address holding the tokens, which has approved allowance to the crowdsale.
      */
-    constructor (address tokenWallet) public {
-        require(tokenWallet != address(0), "AllowanceCrowdsale: token wallet is the zero address");
-        _tokenWallet = tokenWallet;
+    constructor (address tokenWallet_) {
+        require(tokenWallet_ != address(0), "AllowanceCrowdsale: token wallet is the zero address");
+        _tokenWallet = tokenWallet_;
     }
 
     /**
@@ -45,7 +46,7 @@ contract AllowanceCrowdsale is Crowdsale {
      * @param beneficiary Token purchaser
      * @param tokenAmount Amount of tokens purchased
      */
-    function _deliverTokens(address beneficiary, uint256 tokenAmount) internal {
+    function _deliverTokens(address beneficiary, uint256 tokenAmount) virtual override internal {
         token().safeTransferFrom(_tokenWallet, beneficiary, tokenAmount);
     }
 }

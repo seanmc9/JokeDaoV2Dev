@@ -1,13 +1,14 @@
-pragma solidity ^0.5.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.4;
 
-import "../../math/SafeMath.sol";
+import "../../utils/math/SafeMath.sol";
 import "../Crowdsale.sol";
 
 /**
  * @title TimedCrowdsale
  * @dev Crowdsale accepting contributions only within a time frame.
  */
-contract TimedCrowdsale is Crowdsale {
+abstract contract TimedCrowdsale is Crowdsale {
     using SafeMath for uint256;
 
     uint256 private _openingTime;
@@ -30,17 +31,17 @@ contract TimedCrowdsale is Crowdsale {
 
     /**
      * @dev Constructor, takes crowdsale opening and closing times.
-     * @param openingTime Crowdsale opening time
-     * @param closingTime Crowdsale closing time
+     * @param openingTime_ Crowdsale opening time
+     * @param closingTime_ Crowdsale closing time
      */
-    constructor (uint256 openingTime, uint256 closingTime) public {
+    constructor (uint256 openingTime_, uint256 closingTime_) {
         // solhint-disable-next-line not-rely-on-time
-        require(openingTime >= block.timestamp, "TimedCrowdsale: opening time is before current time");
+        require(openingTime_ >= block.timestamp, "TimedCrowdsale: opening time is before current time");
         // solhint-disable-next-line max-line-length
-        require(closingTime > openingTime, "TimedCrowdsale: opening time is not before closing time");
+        require(closingTime_ > openingTime_, "TimedCrowdsale: opening time is not before closing time");
 
-        _openingTime = openingTime;
-        _closingTime = closingTime;
+        _openingTime = openingTime_;
+        _closingTime = closingTime_;
     }
 
     /**
@@ -79,7 +80,7 @@ contract TimedCrowdsale is Crowdsale {
      * @param beneficiary Token purchaser
      * @param weiAmount Amount of wei contributed
      */
-    function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal onlyWhileOpen view {
+    function _preValidatePurchase(address beneficiary, uint256 weiAmount) virtual override internal onlyWhileOpen view {
         super._preValidatePurchase(beneficiary, weiAmount);
     }
 
