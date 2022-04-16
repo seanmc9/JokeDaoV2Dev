@@ -1,5 +1,8 @@
 import { Collapse, Input } from "antd";
 import React, { useState } from "react";
+
+import { SwapWidget } from '@uniswap/widgets'
+
 import { Contract } from "../components";
 import DeployedContestContract from "../contracts/bytecodeAndAbi/Contest.sol/Contest.json";
 import DeployedGenericVotesTokenContract from "../contracts/bytecodeAndAbi/GenericVotesToken.sol/GenericVotesToken.json";
@@ -10,6 +13,8 @@ export default function InstructionSection({targetNetwork, price, signer, provid
 
   const [fullContestSearchInput, setFullContestSearchInput] = useState("");
   const [tokenSearchInput, setTokenSearchInput] = useState("");
+
+  console.log("provider: ", provider);
 
   function generateCustomConfigBase() {
     let customConfigBase = {};
@@ -137,6 +142,17 @@ export default function InstructionSection({targetNetwork, price, signer, provid
                 <div style={{ padding: 5, width: 800, margin: "auto", marginTop: 75 }}>
                   <h5>jokecartel was here</h5>
                 </div>
+              </Panel>
+              <Panel header="Want to buy some JOKE?" key="3">
+                {provider == null ?
+                  "" :
+                  <div style={{ paddingLeft: 170 }}>
+                    <SwapWidget
+                      provider={provider}
+                      jsonRpcEndpoint={provider.connection.url}
+                    />
+                  </div>
+                }
               </Panel>
             </Collapse>
           </Panel>
