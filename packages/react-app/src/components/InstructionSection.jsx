@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Contract } from "../components";
 import DeployedContestContract from "../contracts/bytecodeAndAbi/Contest.sol/Contest.json";
 import DeployedGenericVotesTimestampTokenContract from "../contracts/bytecodeAndAbi/GenericVotesTimestampToken.sol/GenericVotesTimestampToken.json";
+import DeployedContestCrowdsaleContract from "../contracts/bytecodeAndAbi/ContestCrowdsale.sol/ContestCrowdsale.json";
 
 const { Panel } = Collapse;
 
@@ -10,6 +11,7 @@ export default function InstructionSection({targetNetwork, price, signer, provid
 
   const [fullContestSearchInput, setFullContestSearchInput] = useState("");
   const [tokenSearchInput, setTokenSearchInput] = useState("");
+  const [crowdsaleSearchInput, setCrowdsaleSearchInput] = useState("");
 
   function generateCustomConfigBase() {
     let customConfigBase = {};
@@ -48,6 +50,23 @@ export default function InstructionSection({targetNetwork, price, signer, provid
         name: targetNetwork.name
       }
     return customTokenConfig;
+  }
+
+  function generateCustomCrowdsaleConfig() {
+    let customCrowdsaleConfig = generateCustomConfigBase();
+    customCrowdsaleConfig["deployedContracts"][targetNetwork.chainId][targetNetwork.name] =
+      {
+        chainId: targetNetwork.chainId.toString(),
+        contracts: {
+          ContestCrowdsale: {
+            abi: DeployedContestCrowdsaleContract.abi,
+            address: crowdsaleSearchInput
+          }
+        },
+        name: targetNetwork.name
+      }
+    console.log("crowdsaleconfig", customCrowdsaleConfig)
+    return customCrowdsaleConfig;
   }
 
   return (
@@ -113,13 +132,12 @@ export default function InstructionSection({targetNetwork, price, signer, provid
                     provider={provider}
                     address={address}
                     blockExplorer={blockExplorer}
-                    contractConfig={generateCustomContestConfig(true)}
+                    contractConfig={generateCustomContestConfig()}
                     chainId={targetNetwork.chainId}
                   />
                 : ""
                 }
                 <div>
-                  {/* Get rid of any whitespace or extra quotation marks */}
                   <Input icon='search' placeholder='Search ERC20VotesTimestamp full contract functions' value={tokenSearchInput} onChange={(e) => setTokenSearchInput(e.target.value.trim().replace(/['"]+/g, ''))} />
                 </div>
                 {tokenSearchInput != "" ? 
@@ -131,6 +149,21 @@ export default function InstructionSection({targetNetwork, price, signer, provid
                     address={address}
                     blockExplorer={blockExplorer}
                     contractConfig={generateCustomTokenConfig()}
+                    chainId={targetNetwork.chainId}
+                  /> 
+                : ""}
+                <div>
+                  <Input icon='search' placeholder='Search ContestCrowdsale full contract functions' value={crowdsaleSearchInput} onChange={(e) => setCrowdsaleSearchInput(e.target.value.trim().replace(/['"]+/g, ''))} />
+                </div>
+                {crowdsaleSearchInput != "" ? 
+                  <Contract
+                    name="ContestCrowdsale"
+                    price={price}
+                    signer={signer}
+                    provider={provider}
+                    address={address}
+                    blockExplorer={blockExplorer}
+                    contractConfig={generateCustomCrowdsaleConfig()}
                     chainId={targetNetwork.chainId}
                   /> 
                 : ""}

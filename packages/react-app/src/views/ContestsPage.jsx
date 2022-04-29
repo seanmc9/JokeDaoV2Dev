@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Input, Collapse, notification } from "antd";
 import { useLocation } from "react-router-dom";
 
-import { ContestContract, CreateContestModal, CreateGenericVotesTimestampTokenModal } from "../components";
+import { ContestContract, CreateContestModal, CreateGenericVotesTimestampTokenModal, CreateContestCrowdsaleModal } from "../components";
 import DeployedContestContract from "../contracts/bytecodeAndAbi/Contest.sol/Contest.json";
 
 const { Panel } = Collapse;
@@ -10,6 +10,7 @@ const { Panel } = Collapse;
 export default function ContestsPage({targetNetwork, price, signer, provider, mainnetProvider, address, blockExplorer}) {
 
   const [contestSearchInput, setContestSearchInput] = useState("");
+  const [isCreateCrowdsaleModalVisible, setIsCreateCrowdsaleModalVisible] = useState(false);
   const [isCreateContestModalVisible, setIsCreateContestModalVisible] = useState(false);
   const [isCreateTokenModalVisible, setIsCreateTokenModalVisible] = useState(false);
   const [resultMessage, setResultMessage] = useState("");
@@ -37,6 +38,10 @@ export default function ContestsPage({targetNetwork, price, signer, provider, ma
       }
     return customContestConfig;
   }
+  
+  const showCrowdsaleModal = () => {
+    setIsCreateCrowdsaleModalVisible(true);
+  };
   
   const showContestModal = () => {
     setIsCreateContestModalVisible(true);
@@ -76,6 +81,9 @@ export default function ContestsPage({targetNetwork, price, signer, provider, ma
       <Button type="primary" onClick={showContestModal}>
         Create Contest
       </Button>
+      <Button type="primary" onClick={showCrowdsaleModal}>
+        Create Crowdsale
+      </Button>
       <CreateContestModal 
         modalVisible={isCreateContestModalVisible} 
         setModalVisible={setIsCreateContestModalVisible} 
@@ -85,6 +93,12 @@ export default function ContestsPage({targetNetwork, price, signer, provider, ma
       <CreateGenericVotesTimestampTokenModal 
         modalVisible={isCreateTokenModalVisible} 
         setModalVisible={setIsCreateTokenModalVisible} 
+        setResultMessage={setResultMessage} 
+        signer={signer}
+      />
+      <CreateContestCrowdsaleModal 
+        modalVisible={isCreateCrowdsaleModalVisible} 
+        setModalVisible={setIsCreateCrowdsaleModalVisible} 
         setResultMessage={setResultMessage} 
         signer={signer}
       />

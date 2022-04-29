@@ -26,5 +26,6 @@ export { default as TokenSelect } from "./TokenSelect";
 export { default as CreateContestModal } from "./CreateContestModal";
 export { default as CreateGenericVotesTimestampTokenModal } from "./CreateGenericVotesTimestampTokenModal";
 export { default as CreateERC20VotesTimestampWrapperModal } from "./CreateERC20VotesTimestampWrapperModal";
+export { default as CreateContestCrowdsaleModal } from "./CreateContestCrowdsaleModal";
 export { default as ContestContract } from "./ContestContract";
 export { default as InstructionSection } from "./InstructionSection";
