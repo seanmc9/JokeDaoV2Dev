@@ -142,6 +142,12 @@ abstract contract IGovernor is IERC165 {
 
     /**
      * @notice module:reputation
+     * @dev Voting power of an `account` at a specific `timestamp` given linear vote decay from the start of the contest.
+     */
+    function getLinearlyDecayedVotes(address account, uint256 timestamp) public view virtual returns (uint256);
+
+    /**
+     * @notice module:reputation
      * @dev Voting power of an `account` at a specific `timestamp`.
      *
      * Note: this can be implemented in a number of ways, for example by reading the delegated balance from one (or

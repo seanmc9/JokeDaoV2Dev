@@ -19,6 +19,14 @@ abstract contract GovernorVotesTimestamp is Governor {
     }
 
     /**
+     * Read the voting weight from the token's built in snapshot mechanism (see {IGovernor-getLinearlyDecayedVotes}).
+     */
+    function getLinearlyDecayedVotes(address account, uint256 timestamp) public view virtual override returns (uint256) {
+        uint256 percentOfTimeElapsed = ((block.timestamp - voteStart()) * 100) / votingDelay(); // Get (rounded to the lowest percent) the percentile of linear decay the contest is at currently
+        return (percentOfTimeElapsed * token.getPastVotes(account, timestamp)) / 100;
+    }
+
+    /**
      * Read the voting weight from the token's built in snapshot mechanism (see {IGovernor-getVotes}).
      */
     function getVotes(address account, uint256 timestamp) public view virtual override returns (uint256) {

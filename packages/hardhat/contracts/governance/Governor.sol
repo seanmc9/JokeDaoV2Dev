@@ -164,6 +164,13 @@ abstract contract Governor is Context, ERC165, EIP712, IGovernor {
     }
 
     /**
+     * @dev Returns whether this contest using linear vote decay
+     */
+    function isUsingLinearVoteDecay() public view virtual returns (bool) {
+        return false;
+    }
+
+    /**
      * @dev Max number of proposals allowed in this contest
      */
     function maxProposalCount() public view virtual returns (uint256) {

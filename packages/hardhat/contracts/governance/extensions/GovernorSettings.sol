@@ -19,6 +19,7 @@ abstract contract GovernorSettings is Governor {
     uint256 private _proposalThreshold;
     uint256 private _numAllowedProposalSubmissions;
     uint256 private _maxProposalCount;
+    bool    private _useLinearVoteDecay;
     address private _creator;
 
     event ContestStartSet(uint256 oldContestStart, uint256 newContestStart);
@@ -28,6 +29,7 @@ abstract contract GovernorSettings is Governor {
     event ProposalThresholdSet(uint256 oldProposalThreshold, uint256 newProposalThreshold);
     event NumAllowedProposalSubmissionsSet(uint256 oldNumAllowedProposalSubmissions, uint256 newNumAllowedProposalSubmissions);
     event MaxProposalCountSet(uint256 oldMaxProposalCount, uint256 newMaxProposalCount);
+    event UseLinearVoteDecaySet(bool oldUseLinearVoteDecay, bool newUseLinearVoteDecay);
     event CreatorSet(address oldCreator, address newCreator);
 
     /**
@@ -40,7 +42,8 @@ abstract contract GovernorSettings is Governor {
         uint256 initialContestSnapshot,
         uint256 initialProposalThreshold,
         uint256 initialNumAllowedProposalSubmissions,
-        uint256 initialMaxProposalCount
+        uint256 initialMaxProposalCount,
+        bool    initialUseLinearVoteDecay
     ) {
         _setContestStart(initialContestStart);
         _setVotingDelay(initialVotingDelay);
@@ -49,6 +52,7 @@ abstract contract GovernorSettings is Governor {
         _setProposalThreshold(initialProposalThreshold);
         _setNumAllowedProposalSubmissions(initialNumAllowedProposalSubmissions);
         _setMaxProposalCount(initialMaxProposalCount);
+        _setUseLinearVoteDecay(initialUseLinearVoteDecay);
         _setCreator(msg.sender);
     }
 
@@ -99,6 +103,13 @@ abstract contract GovernorSettings is Governor {
      */
     function maxProposalCount() public view virtual override returns (uint256) {
         return _maxProposalCount;
+    }
+
+    /**
+     * @dev Returns whether this contest using linear vote decay
+     */
+    function isUsingLinearVoteDecay() public view virtual override returns (bool) {
+        return _useLinearVoteDecay;
     }
 
     /**
@@ -178,6 +189,16 @@ abstract contract GovernorSettings is Governor {
     function _setMaxProposalCount(uint256 newMaxProposalCount) internal virtual {
         emit MaxProposalCountSet(_maxProposalCount, newMaxProposalCount);
         _maxProposalCount = newMaxProposalCount;
+    }
+
+    /**
+     * @dev Internal setter for if this contest is using linear vote decay.
+     *
+     * Emits a {UseLinearVoteDecaySet} event.
+     */
+    function _setUseLinearVoteDecay(bool newUseLinearVoteDecay) internal virtual {
+        emit UseLinearVoteDecaySet(_useLinearVoteDecay, newUseLinearVoteDecay);
+        _useLinearVoteDecay = newUseLinearVoteDecay;
     }
 
     /**

@@ -114,9 +114,11 @@ abstract contract GovernorCountingSimple is Governor {
 
         bool firstTimeVoting = proposalvote.addressVoteCounts[account].forVotes == 0;
 
+        // The number of votes one has is determined by token holdings and delegations at the snapshot - the power of those votes, if using vote decay, is determined by the time elapsed since the start of the contest
+        uint256 weightedVotingPower = isUsingLinearVoteDecay() ? getLinearlyDecayedVotes(account, contestSnapshot()) : numVotes;
         if (support == uint8(VoteType.For)) {
-            proposalvote.proposalVoteCounts.forVotes += numVotes;
-            proposalvote.addressVoteCounts[account].forVotes += numVotes;
+            proposalvote.proposalVoteCounts.forVotes += weightedVotingPower;
+            proposalvote.addressVoteCounts[account].forVotes += weightedVotingPower;
         } else {
             revert("GovernorVotingSimple: invalid value for enum VoteType");
         }

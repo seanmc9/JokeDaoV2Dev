@@ -7,7 +7,7 @@ import "./governance/extensions/GovernorCountingSimple.sol";
 import "./governance/extensions/GovernorVotesTimestamp.sol";
 
 contract Contest is Governor, GovernorSettings, GovernorCountingSimple, GovernorVotesTimestamp {
-    constructor(string memory _name, IVotesTimestamp _token, uint256[] memory _constructorIntParams)
+    constructor(string memory _name, IVotesTimestamp _token, uint256[] memory _constructorIntParams, bool _useLinearVoteDecay)
         Governor(_name)
         GovernorSettings(
             _constructorIntParams[0], // _initialContestStart
@@ -16,7 +16,8 @@ contract Contest is Governor, GovernorSettings, GovernorCountingSimple, Governor
             _constructorIntParams[3], // _initialContestSnapshot,
             _constructorIntParams[4], // _initialProposalThreshold, 
             _constructorIntParams[5], // _initialNumAllowedProposalSubmissions, 
-            _constructorIntParams[6]  // _initialMaxProposalCount
+            _constructorIntParams[6], // _initialMaxProposalCount
+            _useLinearVoteDecay
         )
         GovernorVotesTimestamp(_token)
     {}
@@ -77,6 +78,15 @@ contract Contest is Governor, GovernorSettings, GovernorCountingSimple, Governor
         return super.maxProposalCount();
     }
 
+    function isUsingLinearVoteDecay()
+        public
+        view
+        override(Governor, GovernorSettings)
+        returns (bool)
+    {
+        return super.isUsingLinearVoteDecay();
+    }
+
     function creator()
         public
         view
@@ -84,6 +94,15 @@ contract Contest is Governor, GovernorSettings, GovernorCountingSimple, Governor
         returns (address)
     {
         return super.creator();
+    }
+
+    function getLinearlyDecayedVotes(address account, uint256 blockNumber)
+        public
+        view
+        override(IGovernor, GovernorVotesTimestamp)
+        returns (uint256)
+    {
+        return super.getLinearlyDecayedVotes(account, blockNumber);
     }
 
     function getVotes(address account, uint256 blockNumber)
