@@ -53,10 +53,10 @@ export default function CreateContestCrowdsaleModal({modalVisible, setModalVisib
       >
         <h4>Name: the name you would like your crowdsale to have</h4>
         <h4>Sale Token: the address of the </h4>
-        <h4>Rate: the number of Sale Tokens a buyer will get per native token of the blockchain you are using (if on Ethereum, ETH; if on Polygon, MATIC) (for crowdsale tokens with 18 decimals) </h4>
+        <h4>Rate: the number of Sale Tokens a buyer will get per native token of the blockchain you are using (ie. if on Ethereum, ETH; if on Polygon, MATIC) (for crowdsale tokens with 18 decimals) </h4>
         <h4>Holding Wallet: the wallet that the crowdsale will draw the Sale Tokens from when buyers buy them (you will need to approve this crowdsale contract to spend Sale Tokens from this wallet once the crowdsale is deployed in order for the tokens to be sold)</h4>
         <h4>Recieving Wallet: the address that the proceeds of the crowdsale will go to</h4>
-        <h4>Sale Cap: maximum number of native tokens of the blockchain you are using (if on Ethereum, ETH; if on Polygon, MATIC) (for crowdsale tokens with 18 decimals) that will be accepted for Sale Token in the crowdsale</h4>
+        <h4>Sale Cap: maximum number of native tokens of the blockchain you are using (ie. if on Ethereum, ETH; if on Polygon, MATIC) (for crowdsale tokens with 18 decimals) that will be accepted for Sale Token in the crowdsale</h4>
         <h4>Sale Opening Time: the Unix timestamp at which the crowdsale will open</h4>
         <h4>Sale Closing Time: the Unix timestamp at which the crowdsale will close</h4>
         <Divider />
@@ -100,7 +100,7 @@ export default function CreateContestCrowdsaleModal({modalVisible, setModalVisib
         <Form.Item
           label="Sale Cap"
           name="salecap"
-          rules={[{ required: true, message: 'Please input the max number of native blockchain tokens (ie. if Ethereum, then ETH; if Polygon, then MATIC) that will be accepted by the crowdsale before it is sold out!' }]}
+          rules={[{ required: true, message: 'Please input the max number of native blockchain tokens (ie. if on Ethereum, then ETH; if on Polygon, then MATIC) that will be accepted by the crowdsale before it is sold out!' }]}
         >
           <Input placeholder='Sale Cap' onChange={(e) => setSaleCap(ethers.utils.parseEther(e.target.value))} />
         </Form.Item>
